@@ -4,6 +4,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 import base64
+from sklearn.model_selection import train_test_split
+
 def add_bg_from_local(image_file):
     with open(image_file, "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read())
@@ -29,16 +31,18 @@ y = sales_df['sales']
 
 # Convert categorical variables to dummy variables
 X = pd.get_dummies(X, columns=['day', 'item_name'], prefix=['day', 'item_name'])
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
 
 # Create the linear regression model
 model = LinearRegression()
 
 # Train the model on the sales data
-model.fit(X, y)
+model.fit(X_train, y_train)
 
 # Calculate the mean squared error and R^2 score for the model
-y_pred = model.predict(X)
-mse = mean_squared_error(y, y_pred)
+y_pred = model.predict(X_test)
+mse = mean_squared_error(y_test, y_pred)
 r2 = r2_score(y, y_pred)
 print('Mean squared error: ', mse)
 print('R^2 score:', r2)

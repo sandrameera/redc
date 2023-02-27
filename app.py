@@ -5,6 +5,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 import base64
 from sklearn.model_selection import train_test_split
+import plotly.figure_factory as ff
+
 
 def add_bg_from_local(image_file):
     with open(image_file, "rb") as image_file:
@@ -71,6 +73,9 @@ X_new = X_new[X.columns]
 y_new = model.predict(X_new)
 if st.button('Predict'):
     st.write('Predicted sales: ', y_new[0])
+    
+    fig = ff.create_distplot(
+        y, y_pred, bin_size=[.1, .25, .5])
     
 
 

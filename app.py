@@ -43,7 +43,7 @@ model.fit(X_train, y_train)
 # Calculate the mean squared error and R^2 score for the model
 y_pred = model.predict(X_test)
 mse = mean_squared_error(y_test, y_pred)
-r2 = r2_score(y, y_pred)
+r2 = r2_score(y_test, y_pred)
 print('Mean squared error: ', mse)
 print('R^2 score:', r2)
 

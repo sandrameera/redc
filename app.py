@@ -22,7 +22,7 @@ def add_bg_from_local(image_file):
     """,
     unsafe_allow_html=True
     )
-add_bg_from_local('pic.jpg')  
+add_bg_from_local('sales.jpg')  
 
 # Load the sales data
 sales_df = pd.read_csv('sales_data.csv')

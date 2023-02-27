@@ -74,6 +74,13 @@ y_new = model.predict(X_new)
 if st.button('Predict'):
     st.write('Predicted sales: ', y_new[0])
     
+    plt.scatter(y, y_pred)
+plt.xlabel('Actual sales')
+plt.ylabel('Predicted sales')
+plt.title('Actual vs predicted sales')
+plt.show()
+st.pyplot(y)
+    
   
 
 

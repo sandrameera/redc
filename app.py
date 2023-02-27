@@ -76,6 +76,7 @@ if st.button('Predict'):
     
     fig = ff.create_distplot(
         y, y_pred, bin_size=[.1, .25, .5])
+    st.plotly_chart(fig, use_container_width=True)
     
 
 

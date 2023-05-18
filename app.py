@@ -4,13 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pydicom
 import os
-import joblib
-
-# Load the trained model
-model = joblib.load('REDCNN_90epoch.ckpt')
-
-# Define the Streamlit app
-
 
 
 # Define the preprocessing functions

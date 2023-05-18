@@ -85,7 +85,7 @@ def main():
     st.title("CT Image Denoising")
     
     # Upload the low dose CT image
-    dcm_file = st.file_uploader("Upload Low Dose CT Image (DICOM)", type="dcm","ima")
+    dcm_file = st.file_uploader("Upload Low Dose CT Image (DICOM)", type="ima")
     
     if dcm_file is not None:
         # Read the DICOM file

@@ -89,7 +89,7 @@ def main():
     
     if dcm_file is not None:
         # Read the DICOM file
-        dcm_data = pydicom.dcmread(dcm_file)
+        dcm_data = pydicom.imaread(dcm_file)
         slices = load_scan(os.path.dirname(dcm_file.name))
         low_dose_image = get_pixels_hu(slices)
         low_dose_image = normalize_(low_dose_image)

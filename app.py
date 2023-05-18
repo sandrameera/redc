@@ -10,7 +10,9 @@ import os
 
 def load_scan(path):
     # referred from https://www.kaggle.com/gzuidhof/full-preprocessing-tutorial
-    slices = [pydicom.read_file(os.path.join(path, s)) for s in os.listdir(path)]
+    # Retrieve both .dcm and .ima files from the directory
+    file_list = glob.glob(os.path.join(path, "*.dcm")) + glob.glob(os.path.join(path, "*.ima"))
+    slices = [pydicom.read_file(file) for file in file_list]
     slices.sort(key=lambda x: float(x.ImagePositionPatient[2]))
     try:
         slice_thickness = np.abs(slices[0].ImagePositionPatient[2] - slices[1].ImagePositionPatient[2])

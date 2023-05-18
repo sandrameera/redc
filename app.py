@@ -9,24 +9,22 @@ import os
 # Define the preprocessing functions
 
 
-def get_pixels_hu(slices):
-    if len(slices) == 0:
-        raise ValueError("No valid DICOM slices provided.")
-    
-    image = np.stack([s.pixel_array for s in slices if s.pixel_array is not None])
-    if len(image) == 0:
-        raise ValueError("No valid pixel arrays found in the DICOM slices.")
-    
-    image = image.astype(np.int16)
-    image[image == -2000] = 0
-    for slice_number in range(len(slices)):
-        intercept = slices[slice_number].RescaleIntercept
-        slope = slices[slice_number].RescaleSlope
-        if slope != 1:
-            image[slice_number] = slope * image[slice_number].astype(np.float64)
-            image[slice_number] = image[slice_number].astype(np.int16)
-        image[slice_number] += np.int16(intercept)
-    return np.array(image, dtype=np.int16)
+def load_scan(path):
+    slices = []
+    for root, _, files in os.walk(path):
+        for file in files:
+            if file.endswith('.ima'):
+                dcm_file = pydicom.filereader.dcmread(os.path.join(root, file))
+                slices.append(dcm_file)
+
+    if not slices:
+        raise ValueError("No valid DICOM files found in the given path.")
+
+    slices.sort(key=lambda x: float(x.ImagePositionPatient[2]))
+    slice_thickness = slices[0].SliceThickness
+
+    return slices, slice_thickness
+
 
 
 

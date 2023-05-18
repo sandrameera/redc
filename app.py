@@ -24,7 +24,6 @@ def load_scan(path):
         s.SliceThickness = slice_thickness
     return slices
 
-
 def get_pixels_hu(slices):
     image = np.stack([s.pixel_array for s in slices])
     image = image.astype(np.int16)

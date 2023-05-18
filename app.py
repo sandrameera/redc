@@ -8,10 +8,12 @@ import os
 
 # Define the preprocessing functions
 
-
 def load_scan(path):
-    # referred from https://www.kaggle.com/gzuidhof/full-preprocessing-tutorial
-    slices = [pydicom.read_file(os.path.join(path, s)) for s in os.listdir(path)]
+    slices = []
+    for s in os.listdir(path):
+        if s.endswith('.ima'):
+            dcm_file = pydicom.dcmread(os.path.join(path, s))
+            slices.append(dcm_file)
     slices.sort(key=lambda x: float(x.ImagePositionPatient[2]))
     try:
         slice_thickness = np.abs(slices[0].ImagePositionPatient[2] - slices[1].ImagePositionPatient[2])
@@ -23,7 +25,6 @@ def load_scan(path):
 
 
 def get_pixels_hu(slices):
-    # referred from https://www.kaggle.com/gzuidhof/full-preprocessing-tutorial
     image = np.stack([s.pixel_array for s in slices])
     image = image.astype(np.int16)
     image[image == -2000] = 0
@@ -40,6 +41,7 @@ def get_pixels_hu(slices):
 def normalize_(image, MIN_B=-1024.0, MAX_B=3072.0):
     image = (image - MIN_B) / (MAX_B - MIN_B)
     return image
+
 
 def adjust_brightness(image, brightness_factor):
     image = image * brightness_factor
@@ -84,12 +86,12 @@ def main():
     st.title("CT Image Denoising")
     
     # Upload the low dose CT image
-    dcm_file = st.file_uploader("Upload Low Dose CT Image (DICOM)", type="ima")
+    ima_file = st.file_uploader("Upload Low Dose CT Image (IMA)", type="ima")
     
-    if dcm_file is not None:
-        # Read the DICOM file
-        dcm_data = pydicom.dcmread(dcm_file)
-        slices = load_scan(os.path.dirname(dcm_file.name))
+    if ima_file is not None:
+        # Read the DICOM files
+        path = os.path.dirname(ima_file.name)
+        slices = load_scan(path)
         low_dose_image = get_pixels_hu(slices)
         low_dose_image = normalize_(low_dose_image)
 
@@ -115,6 +117,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 

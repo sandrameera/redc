@@ -17,14 +17,7 @@ def load_scan(path):
                 dcm_file = pydicom.filereader.dcmread(os.path.join(root, file))
                 slices.append(dcm_file)
     slices.sort(key=lambda x: float(x.ImagePositionPatient[2]))
-    try:
-        slice_thickness = slices[0].SliceThickness
-    except AttributeError:
-        try:
-            pixel_spacing = slices[0].PixelSpacing
-            slice_thickness = np.abs(pixel_spacing[0])
-        except AttributeError:
-            slice_thickness = 1.0  # Set a default value if both attributes are missing
+    slice_thickness = 1.0  # Set a default value
     for s in slices:
         s.SliceThickness = slice_thickness
     return slices

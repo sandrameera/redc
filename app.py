@@ -20,10 +20,15 @@ def load_scan(path):
     try:
         slice_thickness = slices[0].SliceThickness
     except AttributeError:
-        slice_thickness = 1.0  # Set a default value if the attribute is missing
+        try:
+            pixel_spacing = slices[0].PixelSpacing
+            slice_thickness = np.abs(pixel_spacing[0])
+        except AttributeError:
+            slice_thickness = 1.0  # Set a default value if both attributes are missing
     for s in slices:
         s.SliceThickness = slice_thickness
     return slices
+
 
 
 

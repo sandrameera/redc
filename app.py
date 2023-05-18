@@ -4,6 +4,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pydicom
 import os
+import joblib
+
+# Load the trained model
+model = joblib.load('path/to/your/model.pkl')
+
+# Define the Streamlit app
+def main():
+    st.title('Your Model Deployment')
+    # Add your UI components and model inference logic here
+
+# Run the app
+if __name__ == '__main__':
+    main()
+
 
 
 # Define the preprocessing functions

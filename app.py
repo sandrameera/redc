@@ -11,7 +11,7 @@ import os
 
 def load_scan(path):
     try:
-        dcm_file = pydicom.dcmread(path)
+        dcm_file = pydicom.filereader.dcmread(path, force=True)
     except pydicom.errors.InvalidDicomError:
         raise ValueError("Invalid DICOM file format. Only .ima files are supported.")
 

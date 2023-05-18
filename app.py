@@ -2,17 +2,11 @@ import streamlit as st
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
-import pyimzml
+import pydicom
 import os
 
 
 # Define the preprocessing functions
-
-def calculate_slice_thickness(slices):
-    slice_positions = [float(s.get("position")) for s in slices]
-    slice_positions.sort()
-    slice_thickness = np.abs(slice_positions[0] - slice_positions[1])
-    return slice_thickness
 
 
 def load_scan(path):
@@ -20,16 +14,16 @@ def load_scan(path):
     for root, _, files in os.walk(path):
         for file in files:
             if file.endswith('.ima'):
-                imzml_file = pyimzml.ImzMLParser(os.path.join(root, file))
-                dcm_file = imzml_file.get_dataset()
+                dcm_file = pydicom.filereader.dcmread(os.path.join(root, file))
                 slices.append(dcm_file)
-    slices.sort(key=lambda x: float(x.get("position")))
-    slice_thickness = calculate_slice_thickness(slices)
+    slices.sort(key=lambda x: float(x.ImagePositionPatient[2]))
+    try:
+        slice_thickness = np.abs(slices[0].ImagePositionPatient[2] - slices[1].ImagePositionPatient[2])
+    except:
+        slice_thickness = np.abs(slices[0].SliceLocation - slices[1].SliceLocation)
     for s in slices:
-        s.set("slice_thickness", slice_thickness)
+        s.SliceThickness = slice_thickness
     return slices
-
-
 
 
 def get_pixels_hu(slices):
@@ -74,19 +68,19 @@ def denoise_ct_image(low_dose_image, brightness_factor, model_path):
     with torch.no_grad():
         low_dose_image_tensor = torch.from_numpy(low_dose_image).unsqueeze(0).unsqueeze(0)
         low_dose_image_tensor = low_dose_image_tensor.to(device)
-
+        
         # Select a single slice
         low_dose_image_slice = low_dose_image_tensor[:, :, 9, :, :]
-
+        
         # Convert the input tensor to the same data type as the model's bias
         low_dose_image_slice = low_dose_image_slice.float()
-
+        
         denoised_image_tensor = model(low_dose_image_slice)
         denoised_image = denoised_image_tensor.squeeze().cpu().numpy()
-
+    
     # Adjust brightness of the denoised image
     denoised_image = adjust_brightness(denoised_image, brightness_factor)
-
+    
     return denoised_image
 
 
@@ -126,7 +120,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-
-
-
-    

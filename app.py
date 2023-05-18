@@ -11,10 +11,11 @@ import os
 
 def load_scan(path):
     slices = []
-    for s in os.listdir(path):
-        if s.endswith('.ima'):
-            dcm_file = pydicom.filereader.dcmread(os.path.join(path, s))
-            slices.append(dcm_file)
+    for root, _, files in os.walk(path):
+        for file in files:
+            if file.endswith('.ima'):
+                dcm_file = pydicom.filereader.dcmread(os.path.join(root, file))
+                slices.append(dcm_file)
     slices.sort(key=lambda x: float(x.ImagePositionPatient[2]))
     try:
         slice_thickness = np.abs(slices[0].ImagePositionPatient[2] - slices[1].ImagePositionPatient[2])

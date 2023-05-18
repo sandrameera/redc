@@ -8,6 +8,12 @@ import os
 
 # Define the preprocessing functions
 
+def calculate_slice_thickness(slices):
+    slice_positions = [float(s.get("position")) for s in slices]
+    slice_positions.sort()
+    slice_thickness = np.abs(slice_positions[0] - slice_positions[1])
+    return slice_thickness
+
 
 def load_scan(path):
     slices = []
@@ -17,14 +23,13 @@ def load_scan(path):
                 imzml_file = pyimzml.ImzMLParser(os.path.join(root, file))
                 dcm_file = imzml_file.get_dataset()
                 slices.append(dcm_file)
-    slices.sort(key=lambda x: float(x.ImagePositionPatient[2]))
-    try:
-        slice_thickness = np.abs(slices[0].ImagePositionPatient[2] - slices[1].ImagePositionPatient[2])
-    except:
-        slice_thickness = np.abs(slices[0].SliceLocation - slices[1].SliceLocation)
+    slices.sort(key=lambda x: float(x.get("position")))
+    slice_thickness = calculate_slice_thickness(slices)
     for s in slices:
-        s.SliceThickness = slice_thickness
+        s.set("slice_thickness", slice_thickness)
     return slices
+
+
 
 
 def get_pixels_hu(slices):

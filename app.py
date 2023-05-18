@@ -85,7 +85,7 @@ def main():
     st.title("CT Image Denoising")
 
     # Upload the low dose CT image
-    ima_file = st.file_uploader("Upload Low Dose CT Image (IMA)", type="ima")
+    ima_file = st.file_uploader("Upload Low Dose CT Image (IMA)", type="IMA")
 
     if ima_file is not None:
         # Read the IMA files

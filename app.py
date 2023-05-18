@@ -4,7 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pydicom
 import os
-from REDCNN_90epoch.ckpt import REDCNN
 
 
 # Define the preprocessing functions

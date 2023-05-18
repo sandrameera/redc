@@ -10,18 +10,9 @@ import os
 
 
 def load_scan(path):
-    slices = []
-    for root, _, files in os.walk(path):
-        for file in files:
-            if file.endswith('.ima'):
-                dcm_file = pydicom.filereader.dcmread(os.path.join(root, file))
-                slices.append(dcm_file)
-
-    if not slices:
-        raise ValueError("No valid DICOM files found in the given path.")
-
-    slices.sort(key=lambda x: float(x.ImagePositionPatient[2]))
-    slice_thickness = slices[0].SliceThickness
+    dcm_file = pydicom.filereader.dcmread(path)
+    slices = [dcm_file]
+    slice_thickness = dcm_file.SliceThickness
 
     return slices, slice_thickness
 

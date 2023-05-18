@@ -19,11 +19,15 @@ def load_scan(path):
     slices.sort(key=lambda x: float(x.ImagePositionPatient[2]))
     try:
         slice_thickness = np.abs(slices[0].ImagePositionPatient[2] - slices[1].ImagePositionPatient[2])
-    except:
-        slice_thickness = np.abs(slices[0].SliceLocation - slices[1].SliceLocation)
+    except AttributeError:
+        try:
+            slice_thickness = np.abs(slices[0].SliceLocation - slices[1].SliceLocation)
+        except AttributeError:
+            slice_thickness = 1.0  # Set a default value if both attributes are missing
     for s in slices:
         s.SliceThickness = slice_thickness
     return slices
+
 
 
 def get_pixels_hu(slices):

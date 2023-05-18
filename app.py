@@ -10,9 +10,14 @@ import os
 
 
 def load_scan(path):
-    dcm_file = pydicom.filereader.dcmread(path)
-    slices = [dcm_file]
-    slice_thickness = dcm_file.SliceThickness
+    slices = []
+    if path.endswith('.ima'):
+        dcm_file = pydicom.dcmread(path)
+        slices.append(dcm_file)
+    else:
+        raise ValueError("Invalid DICOM file format. Only .ima files are supported.")
+
+    slice_thickness = slices[0].SliceThickness
 
     return slices, slice_thickness
 

@@ -8,11 +8,12 @@ import os
 
 # Define the preprocessing functions
 
+
 def load_scan(path):
     slices = []
     for s in os.listdir(path):
         if s.endswith('.ima'):
-            dcm_file = pydicom.dcmread(os.path.join(path, s))
+            dcm_file = pydicom.filereader.dcmread(os.path.join(path, s))
             slices.append(dcm_file)
     slices.sort(key=lambda x: float(x.ImagePositionPatient[2]))
     try:
@@ -84,12 +85,12 @@ def denoise_ct_image(low_dose_image, brightness_factor, model_path):
 
 def main():
     st.title("CT Image Denoising")
-    
+
     # Upload the low dose CT image
     ima_file = st.file_uploader("Upload Low Dose CT Image (IMA)", type="ima")
-    
+
     if ima_file is not None:
-        # Read the DICOM files
+        # Read the IMA files
         path = os.path.dirname(ima_file.name)
         slices = load_scan(path)
         low_dose_image = get_pixels_hu(slices)

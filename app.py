@@ -68,19 +68,19 @@ def denoise_ct_image(low_dose_image, brightness_factor, model_path):
     with torch.no_grad():
         low_dose_image_tensor = torch.from_numpy(low_dose_image).unsqueeze(0).unsqueeze(0)
         low_dose_image_tensor = low_dose_image_tensor.to(device)
-        
+
         # Select a single slice
         low_dose_image_slice = low_dose_image_tensor[:, :, 9, :, :]
-        
+
         # Convert the input tensor to the same data type as the model's bias
         low_dose_image_slice = low_dose_image_slice.float()
-        
+
         denoised_image_tensor = model(low_dose_image_slice)
         denoised_image = denoised_image_tensor.squeeze().cpu().numpy()
-    
+
     # Adjust brightness of the denoised image
     denoised_image = adjust_brightness(denoised_image, brightness_factor)
-    
+
     return denoised_image
 
 
@@ -119,4 +119,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
